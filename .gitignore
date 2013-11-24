@@ -34,3 +34,9 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+voucher_gen/config.php
+voucher_gen/out.csv
+voucher_gen/test.php
+pdf_gen/template.tex
+pdf_gen/*.png
