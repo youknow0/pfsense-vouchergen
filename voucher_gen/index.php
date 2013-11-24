@@ -29,10 +29,9 @@ if (!empty($_POST['generate'])) {
 	$profile = $config->profiles[$profileId];
 	
 	try {
-		echo '<pre>';
 		$v = new pfSense_Voucher($config->host, $config->username, $config->password);
 		
-		$comment = 'AUTO GENERATED from Profile' . $profile->name . ' at ' . strftime('%Y%m%d-%H:%M');
+		$comment = 'AUTO GENERATED from Profile ' . $profile->name . ' at ' . strftime('%Y%m%d-%H:%M');
 		
 		$rollId = $v->generateVoucherRoll($config->zoneName, $profile->minutes, $profile->count, $comment);
 		$csv = $v->obtainVoucherRollCsv($config->zoneName, $rollId);
@@ -40,7 +39,6 @@ if (!empty($_POST['generate'])) {
 		$saveFile = file_put_contents($config->outFile, $csv);
 		
 		$vars['message'] = 'Vouchers have been created.';
-		echo '</pre>';
 		render_template($vars);
 	} catch (pfSense_Voucher_Exception $e) {
 		$vars['message'] = 'Error: ' . $e->getMessage();

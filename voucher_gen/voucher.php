@@ -334,9 +334,6 @@ class pfSense_Voucher {
 			$editLink = $row->find('a[href^=services_captiveportal_vouchers_edit.php]', 0);
 			
 			if ($editLink === null) {
-				echo '<pre>';
-				echo htmlspecialchars($row->innertext);
-				echo '</pre>';
 				throw new pfSense_Voucher_Exception('Failed to get list of voucher Rolls: Unable to find edit link in HTML');
 			}
 			
