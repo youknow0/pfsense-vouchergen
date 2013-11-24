@@ -3,8 +3,8 @@ import sys
 import os
 import subprocess
 
-input_filename = sys.argv[1]
-validity = sys.argv[2]
+input_filename = "test.csv" #sys.argv[1]
+validity = 2 #sys.argv[2]
 
 codes = []
 roll_number = 0
@@ -30,12 +30,28 @@ for row in reader:
 
 input_csv.close()
 
+header = open("header.tex", "r")
+template_tmp = open("template.tex", "r")
+template = template_tmp.read()
+footer = open("footer.tex", "r")
+
+output = open("output.tex", "w")
+
+output.write(header.read())
+
 for code_number in range(len(codes)):
 	tmp = code_number +1
-	template = file('template.tex', 'r').read()
 	page = template % {'code' : codes[code_number], 'roll_number' : roll_number, 'validity' : validity, 'code_number' : tmp}
-	file('result%00*d.tex' % (3,tmp), 'w').write(page)
-	subprocess.call(['pdflatex', 'result%00*d.tex' % (3,tmp), '-interaction=nonstopmode'], shell=False)
-	os.remove('result%00*d.tex' % (3,tmp))
-	os.remove('result%00*d.aux' % (3,tmp))
-	os.remove('result%00*d.log' % (3,tmp))
+	output.write(page)	
+
+output.write(footer.read())
+
+header.close()
+template_tmp.close()
+footer.close()
+output.close()
+
+subprocess.call(['pdflatex', 'output.tex', '-interaction=nonstopmode'], shell=False)
+os.remove('output.tex')
+os.remove('output.aux')
+os.remove('output.log')

@@ -41,4 +41,5 @@ voucher_gen/test.php
 pdf_gen/template.tex
 pdf_gen/*.csv
 pdf_gen/*.pdf
+pdf_gen/*.tex
 pdf_gen/*.png
