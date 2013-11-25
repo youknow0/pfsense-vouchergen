@@ -3,8 +3,14 @@ import sys
 import os
 import subprocess
 
+if len(sys.argv) != 4:
+	print "Usage: %s [input] [validity in hours] [output]" % sys.argv[0]
+	sys.exit(1)
+
 input_filename = sys.argv[1]
 validity = sys.argv[2]
+output_filename = sys.argv[3]
+
 
 codes = []
 roll_number = 0
@@ -35,7 +41,7 @@ template_tmp = open("template.tex", "r")
 template = template_tmp.read()
 footer = open("footer.tex", "r")
 
-output = open("output.tex", "w")
+output = open(output_filename, "w")
 
 output.write(header.read())
 

@@ -16,8 +16,14 @@ $config->zoneName = 'my capti';
 die('change $config->token to a random string unique for your installation!')
 $config->token = '';
 
+// the output directory for pdfs and csvs, INCLUDING slash at the end.
+$config->outDir = 'csv/';
+
 // the file name under which the generated csv will be saved.
-$config->outFile = 'out.csv';
+// strftime() is applied to this string, so you can include the date
+// in the file name.
+// note that the file is overwritten without confirmation.
+$config->outFile = 'out-%Y-%m-%d-%H-%M-%S.csv';
 
 // voucher generation profiles.
 // first parameter: name of the profile

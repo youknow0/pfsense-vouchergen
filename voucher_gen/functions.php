@@ -1,6 +1,14 @@
 <?php
 require_once 'voucher.php';
 
+function include_config() {
+	require 'config.php';
+	
+	if (stripos($config->outFile, '$PROFILE_ID$') === false) {
+		die 'Invalid config: $PROFILE_ID$ not contained in out file name!';
+	}
+}
+
 function register_profile($name, $count, $minutes) {
 	global $config;
 	static $i = 1;
@@ -20,11 +28,11 @@ function register_profile($name, $count, $minutes) {
 	$i++;
 }
 
-function render_template($vars) {
+function render_template($name, $vars) {
 	foreach ($vars as $k => $v) {
 		$$k = $v;
 	}
 	
-	require 'template.php';
+	require $name . '.php';
 	exit;
 }

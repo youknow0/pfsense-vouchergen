@@ -1,11 +1,6 @@
 <?php
 require_once 'functions.php';
-require_once 'config.php';
-
-if (file_exists($config->outFile)) {
-	echo 'PDF Generation is in progress. Please wait until it is finished.';
-	exit;
-}
+include_config();
 
 $vars = array();
 $vars['token'] = md5($config->token . $_SERVER['REMOTE_ADDR']);
@@ -15,15 +10,15 @@ if (!empty($_POST['generate'])) {
 	
 	// failed csrf token
 	if ($vars['token'] != $_POST['token']) {
-		header('HTTP/1.1 Bad Request');
+		header('HTTP/1.1 400 Bad Request');
 		$vars['message'] = 'Invalid request';
-		render_template($vars);
+		render_template('template', $vars);
 	}
 	
 	$profileId = $_POST['profile'];
 	if (!array_key_exists($profileId, $config->profiles)) {
 		$vars['message'] = 'Unknown profile!';
-		render_template($vars);
+		render_template('template', $vars);
 	}
 	
 	$profile = $config->profiles[$profileId];
@@ -36,15 +31,33 @@ if (!empty($_POST['generate'])) {
 		$rollId = $v->generateVoucherRoll($config->zoneName, $profile->minutes, $profile->count, $comment);
 		$csv = $v->obtainVoucherRollCsv($config->zoneName, $rollId);
 		
-		$saveFile = file_put_contents($config->outFile, $csv);
+		$csvFilePath = $config->outDir . '/' . strftime($config->outFile);
+		$pdfFilePath = $csvFilePath . '.pdf';
 		
-		$vars['message'] = 'Vouchers have been created.';
-		render_template($vars);
+		$saveFile = file_put_contents($csvFilePath, $csv);
+		
+		$cmd = 'python ../pdf_gen/wlancodes.py ';
+		$cmd .= escapeshellarg($csvFilePath). ' ';
+		$cmd .= escapeshellarg($pdfFilePath) . ' ';
+		$cmd .= escapeshellarg((int)($profile->minutes / 60));
+		
+		$ret = -1;
+		exec($cmd, null, $ret);
+		
+		if ($ret != 0) {
+			$vars['message'] = 'Failed to create PDF document!';
+			render_template('template', $vars);
+		} else {
+			header('Content-Type: application/pdf');
+			echo file_get_contents($pdfFilePath);
+		}
+		
+		
 	} catch (pfSense_Voucher_Exception $e) {
 		$vars['message'] = 'Error: ' . $e->getMessage();
-		render_template($vars);
+		render_template('template', $vars);
 	}
 	
 }
 
-render_template($vars);
+render_template('template', $vars);
