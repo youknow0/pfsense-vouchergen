@@ -38,6 +38,10 @@ nosetests.xml
 voucher_gen/config.php
 voucher_gen/out.csv
 voucher_gen/test.php
+voucher_gen/csv
+voucher_gen/*.tex
+voucher_gen/*.png
+voucher_gen/texput.log
 pdf_gen/template.tex
 pdf_gen/*.csv
 pdf_gen/*.pdf

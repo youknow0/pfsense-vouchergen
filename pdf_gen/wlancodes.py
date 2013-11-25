@@ -8,8 +8,10 @@ if len(sys.argv) != 4:
 	sys.exit(1)
 
 input_filename = sys.argv[1]
-validity = sys.argv[2]
-output_filename = sys.argv[3]
+
+# .pdf will automatically be appended to output_filename
+output_filename = sys.argv[2]
+validity = sys.argv[3]
 
 
 codes = []
@@ -57,7 +59,11 @@ template_tmp.close()
 footer.close()
 output.close()
 
-subprocess.call(['pdflatex', 'output.tex', '-interaction=nonstopmode'], shell=False)
-os.remove('output.tex')
-os.remove('output.aux')
-os.remove('output.log')
+subprocess.call(['pdflatex', '--jobname=' + output_filename, output_filename, '-interaction=nonstopmode'], shell=False)
+
+try:
+	os.remove(output_filename)
+	os.remove(output_filename + ".aux")
+	os.remove(output_filename  + ".log")
+except OSError:
+	print "Could not remove temp files!"

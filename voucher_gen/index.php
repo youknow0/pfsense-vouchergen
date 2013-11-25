@@ -32,7 +32,10 @@ if (!empty($_POST['generate'])) {
 		$csv = $v->obtainVoucherRollCsv($config->zoneName, $rollId);
 		
 		$csvFilePath = $config->outDir . '/' . strftime($config->outFile);
-		$pdfFilePath = $csvFilePath . '.pdf';
+		$pdfFilePath = $csvFilePath . '_tex';
+		
+		// pdflatex automatically appends .pdf...
+		$pdfFilePathWithExt = $pdfFilePath . '.pdf';
 		
 		$saveFile = file_put_contents($csvFilePath, $csv);
 		
@@ -42,14 +45,19 @@ if (!empty($_POST['generate'])) {
 		$cmd .= escapeshellarg((int)($profile->minutes / 60));
 		
 		$ret = -1;
+		$shellOutput = '';
 		exec($cmd, $shellOutput, $ret);
 		
 		if ($ret != 0) {
-			$vars['message'] = 'Failed to create PDF document!';
+			$vars['message'] = 'Failed to create PDF document (exit status ' . $ret . ')!';
+			foreach($shellOutput as $l) {
+				echo '<!--', htmlspecialchars($l), '-->';
+			}
 			render_template('template', $vars);
 		} else {
 			header('Content-Type: application/pdf');
-			echo file_get_contents($pdfFilePath);
+			echo file_get_contents($pdfFilePathWithExt);
+			exit;
 		}
 		
 		
