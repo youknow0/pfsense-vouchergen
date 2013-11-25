@@ -42,7 +42,7 @@ if (!empty($_POST['generate'])) {
 		$cmd .= escapeshellarg((int)($profile->minutes / 60));
 		
 		$ret = -1;
-		exec($cmd, null, $ret);
+		exec($cmd, $shellOutput, $ret);
 		
 		if ($ret != 0) {
 			$vars['message'] = 'Failed to create PDF document!';

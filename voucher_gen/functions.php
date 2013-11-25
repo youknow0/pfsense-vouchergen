@@ -2,11 +2,8 @@
 require_once 'voucher.php';
 
 function include_config() {
+	global $config;
 	require 'config.php';
-	
-	if (stripos($config->outFile, '$PROFILE_ID$') === false) {
-		die 'Invalid config: $PROFILE_ID$ not contained in out file name!';
-	}
 }
 
 function register_profile($name, $count, $minutes) {
