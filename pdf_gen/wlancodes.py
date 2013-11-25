@@ -3,8 +3,8 @@ import sys
 import os
 import subprocess
 
-input_filename = "test.csv" #sys.argv[1]
-validity = 2 #sys.argv[2]
+input_filename = sys.argv[1]
+validity = sys.argv[2]
 
 codes = []
 roll_number = 0
